@@ -2,37 +2,23 @@ import React from 'react';
 import { Brain, BookOpen, Users, Calendar, Mail, Cpu, Bot, Globe } from 'lucide-react';
 import { TopicCard } from './components/TopicCard';
 import { GalleryImage } from './components/GalleryImage';
+import RonenCNN from './assets/RonenCNN.png';
 
 const topics = [
   {
     icon: <Brain className="w-8 h-8 text-blue-600" />,
-    title: "יסודות הבינה המלאכותית",
-    description: "סקירה מקיפה של עקרונות הבינה המלאכותית והתפתחותה"
+    title: "בינה מלאכותית",
+    description: "מומחה בהנגשת טכנולוגיות AI מתקדמות לקהלים מגוונים, כולל יישומים מעשיים בכלי בינה מלאכותית כמו יצירת שירים, הנפשת תמונות, יצירת קטעי וידאו ועד סביבות פיתוח"
   },
   {
     icon: <BookOpen className="w-8 h-8 text-blue-600" />,
-    title: "למידת מכונה בעולם המודרני",
-    description: "הבנת היישומים היומיומיים של למידת מכונה"
+    title: "חווית לקוח",
+    description: "מוביל תחום Customer Experience במיקרוסופט, התמחות ב-CRM ושיווק דיגיטלי מתקדם"
   },
   {
     icon: <Users className="w-8 h-8 text-blue-600" />,
-    title: "AI וחברה",
-    description: "השפעות חברתיות ואתיות של בינה מלאכותית"
-  },
-  {
-    icon: <Cpu className="w-8 h-8 text-blue-600" />,
-    title: "עיבוד שפה טבעית",
-    description: "כיצד AI מבין ומעבד שפה אנושית"
-  },
-  {
-    icon: <Bot className="w-8 h-8 text-blue-600" />,
-    title: "רובוטיקה וAI",
-    description: "שילוב בינה מלאכותית במערכות רובוטיות"
-  },
-  {
-    icon: <Globe className="w-8 h-8 text-blue-600" />,
-    title: "AI בעולם העסקי",
-    description: "יישומי בינה מלאכותית בתעשייה ועסקים"
+    title: "הרצאות וסדנאות",
+    description: "ניסיון עשיר בהעברת תכנים מורכבים באופן מעניין ונגיש, שילוב ייחודי של טכנולוגיה ובידור"
   }
 ];
 
@@ -90,10 +76,10 @@ function App() {
             alt="רונן ארנרייך"
             className="absolute inset-0 w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-center">
+          <div className="absolute inset-0 bg-black/20 flex items-center justify-center text-center">
             <div className="max-w-4xl px-6">
               <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">רונן ארנרייך</h1>
-              <p className="text-xl md:text-2xl text-gray-200">מרצה מוביל בתחום הבינה המלאכותית והשפעתה על עולמנו המודרני</p>
+              <p className="text-xl md:text-2xl text-white drop-shadow-md">מרצה מוביל בתחום הבינה המלאכותית והשפעתה על עולמנו המודרני</p>
             </div>
           </div>
         </div>
@@ -106,15 +92,16 @@ function App() {
             <div className="w-full md:w-1/3">
               <div className="bg-white/70 backdrop-blur-sm rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-all duration-300 hover:border-blue-200 p-6 h-full">
                 <img
-                  src="[Placeholder for profile image]"
+                  src={RonenCNN}
                   alt="רונן ארנרייך"
                   className="w-full h-64 object-cover rounded-lg mb-6 hover:scale-[1.02] transition-transform duration-300"
                 />
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">רונן ארנרייך</h2>
                 <div className="space-y-4">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-6">פרטי התקשרות</h3>
+                  <h3 className="text-xl font-bold text-gray-800">פרטי התקשרות</h3>
                   <div className="flex items-center gap-3 p-3 bg-white/80 rounded-lg hover:bg-blue-50/80 transition-all duration-300">
                     <Mail className="w-5 h-5 text-blue-600" />
-                    <span className="text-gray-700">example@email.com</span>
+                    <span className="text-gray-700">ronener@gmail.com</span>
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-white/80 rounded-lg hover:bg-blue-50/80 transition-all duration-300">
                     <Calendar className="w-5 h-5 text-blue-600" />
@@ -178,7 +165,7 @@ function App() {
       {/* Topics Section */}
       <section className="bg-white py-20 px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-800 mb-12 text-center">נושאי הרצאה מרכזיים</h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-12 text-center">תחומי התמחות</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {topics.map((topic, index) => (
               <TopicCard key={index} {...topic} />
