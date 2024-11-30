@@ -155,7 +155,7 @@ function App() {
                     <span className="font-semibold text-green-700 px-2 py-1 bg-green-50 rounded-md mx-1 inline-block hover:scale-105 transition-transform">
                       בתחרות Technical Story Telling באורקל בשבדיה
                     </span>, 
-                    שם שילב באופן יצירתי את ריקוד הסלסה כמטאפורה למוצרי שיווק טכנולוגיים. כיום הוא מרצה ב��ושאים כמו 
+                    שם שילב באופן יצירתי את ריקוד הסלסה כמטאפורה למוצרי שיווק טכנולוגיים. כיום הוא מרצה בושאים כמו 
                     <span className="font-semibold text-blue-700 px-2 py-1 bg-blue-50 rounded-md mx-1 inline-block hover:scale-105 transition-transform">
                       שיווק דיגיטלי מתקדם ו-CRM Sales בעידן הבינה המלאכותית
                     </span> 
@@ -299,8 +299,8 @@ function App() {
           <DialogPortal>
             <DialogOverlay className="bg-black/90 backdrop-blur-sm" />
             <DialogContent className={cn(
-              "w-[95vw] h-[90vh]",
-              "max-w-[95vw] max-h-[90vh]",
+              "w-[95vw] h-[95vh]",
+              "max-w-[95vw] max-h-[95vh]",
               "p-0 bg-transparent border-none",
               "overflow-hidden",
               "my-4"
@@ -351,11 +351,12 @@ function App() {
               </button>
 
               {/* Image Container */}
-              <div className="w-full h-full flex items-center justify-center">
+              <div className="w-full h-full flex items-center justify-center p-4">
                 <img
                   src={selectedImage}
                   alt="תמונה מוגדלת"
-                  className="max-w-full max-h-full object-contain"
+                  className="max-w-full max-h-full w-auto h-auto object-contain"
+                  style={{ maxHeight: 'calc(95vh - 2rem)' }}
                 />
               </div>
 
