@@ -1,5 +1,5 @@
 import { Brain, BookOpen, Users, Calendar, Mail, X } from 'lucide-react';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, FormEvent } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -38,6 +38,87 @@ function App() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [hoverText, setHoverText] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+
+  // Add form state
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+
+  const [formErrors, setFormErrors] = useState({
+    fullName: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+
+  // Email validation function
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Handle input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    // Clear error when user starts typing
+    setFormErrors(prev => ({
+      ...prev,
+      [name]: ''
+    }));
+  };
+
+  // Handle input blur (when focus leaves the field)
+  const handleInputBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    validateField(name, value);
+  };
+
+  // Validate individual field
+  const validateField = (name: string, value: string) => {
+    let error = '';
+    
+    if (!value.trim()) {
+      error = 'שדה חובה';
+    } else if (name === 'email' && !isValidEmail(value)) {
+      error = 'כתובת אימייל לא תקינה';
+    }
+
+    setFormErrors(prev => ({
+      ...prev,
+      [name]: error
+    }));
+  };
+
+  // Handle form submission
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    
+    // Validate all fields
+    const newErrors = {
+      fullName: !formData.fullName.trim() ? 'שדה חובה' : '',
+      email: !formData.email.trim() ? 'שדה חובה' : !isValidEmail(formData.email) ? 'כתובת אימייל לא תקינה' : '',
+      subject: !formData.subject.trim() ? 'שדה חובה' : '',
+      message: !formData.message.trim() ? 'שדה חובה' : ''
+    };
+
+    setFormErrors(newErrors);
+
+    // Check if there are any errors
+    if (Object.values(newErrors).some(error => error)) {
+      return;
+    }
+
+    // TODO: Handle form submission
+    console.log('Form submitted:', formData);
+  };
 
   // Memoize the category finding function
   const findCategory = useCallback((category: string) => {
@@ -357,40 +438,100 @@ function App() {
         <div className="max-w-3xl mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-8 sm:mb-12 text-center">צור קשר</h2>
           <div className="bg-white/70 backdrop-blur-sm rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-all duration-300 hover:border-blue-200 p-4 sm:p-8">
-            <form className="space-y-4 sm:space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div className="space-y-3 sm:space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <label className="block text-gray-700 text-sm sm:text-base mb-1 sm:mb-2">שם מלא</label>
+                    <label className="block text-gray-700 text-sm sm:text-base mb-1 sm:mb-2">
+                      שם מלא
+                      <span className="text-red-500">*</span>
+                    </label>
                     <input 
-                      type="text" 
-                      className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white/50 hover:bg-white text-base" 
+                      type="text"
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={handleInputChange}
+                      onBlur={handleInputBlur}
+                      className={cn(
+                        "w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 focus:ring-2 transition-all duration-300 bg-white/50 hover:bg-white text-base",
+                        formErrors.fullName 
+                          ? "border-red-300 focus:border-red-400 focus:ring-red-200"
+                          : "border-gray-200 focus:border-blue-400 focus:ring-blue-200"
+                      )}
                     />
+                    {formErrors.fullName && (
+                      <p className="mt-1 text-sm text-red-500">{formErrors.fullName}</p>
+                    )}
                   </div>
                   <div>
-                    <label className="block text-gray-700 text-sm sm:text-base mb-1 sm:mb-2">אימייל</label>
+                    <label className="block text-gray-700 text-sm sm:text-base mb-1 sm:mb-2">
+                      אימייל
+                      <span className="text-red-500">*</span>
+                    </label>
                     <input 
-                      type="email" 
-                      className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white/50 hover:bg-white text-base" 
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      onBlur={handleInputBlur}
+                      className={cn(
+                        "w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 focus:ring-2 transition-all duration-300 bg-white/50 hover:bg-white text-base",
+                        formErrors.email 
+                          ? "border-red-300 focus:border-red-400 focus:ring-red-200"
+                          : "border-gray-200 focus:border-blue-400 focus:ring-blue-200"
+                      )}
                     />
+                    {formErrors.email && (
+                      <p className="mt-1 text-sm text-red-500">{formErrors.email}</p>
+                    )}
                   </div>
                 </div>
                 <div>
-                  <label className="block text-gray-700 text-sm sm:text-base mb-1 sm:mb-2">נושא</label>
+                  <label className="block text-gray-700 text-sm sm:text-base mb-1 sm:mb-2">
+                    נושא
+                    <span className="text-red-500">*</span>
+                  </label>
                   <input 
-                    type="text" 
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white/50 hover:bg-white text-base" 
+                    type="text"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    onBlur={handleInputBlur}
+                    className={cn(
+                      "w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 focus:ring-2 transition-all duration-300 bg-white/50 hover:bg-white text-base",
+                      formErrors.subject 
+                        ? "border-red-300 focus:border-red-400 focus:ring-red-200"
+                        : "border-gray-200 focus:border-blue-400 focus:ring-blue-200"
+                    )}
                   />
+                  {formErrors.subject && (
+                    <p className="mt-1 text-sm text-red-500">{formErrors.subject}</p>
+                  )}
                 </div>
                 <div>
-                  <label className="block text-gray-700 text-sm sm:text-base mb-1 sm:mb-2">הודעה</label>
+                  <label className="block text-gray-700 text-sm sm:text-base mb-1 sm:mb-2">
+                    הודעה
+                    <span className="text-red-500">*</span>
+                  </label>
                   <textarea 
-                    rows={4} 
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white/50 hover:bg-white text-base"
-                  ></textarea>
+                    rows={4}
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    onBlur={handleInputBlur}
+                    className={cn(
+                      "w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 focus:ring-2 transition-all duration-300 bg-white/50 hover:bg-white text-base",
+                      formErrors.message 
+                        ? "border-red-300 focus:border-red-400 focus:ring-red-200"
+                        : "border-gray-200 focus:border-blue-400 focus:ring-blue-200"
+                    )}
+                  />
+                  {formErrors.message && (
+                    <p className="mt-1 text-sm text-red-500">{formErrors.message}</p>
+                  )}
                 </div>
                 <button 
-                  type="submit" 
+                  type="submit"
                   className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 sm:py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1 text-sm sm:text-base"
                 >
                   שליחה
