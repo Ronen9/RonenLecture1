@@ -226,7 +226,7 @@ function App() {
                     <span className="font-semibold text-blue-700 px-2 py-1 bg-blue-50 rounded-md mx-1 inline-block hover:scale-105 transition-transform">
                       מוביל את תחום חווית הלקוח במיקרוסופט במחלקת BizApps
                     </span>, 
-                    ולאורך הקריירה שלו עבד בחברות מובילות כמו אנטל, אמדוקס ואורקל.
+                    ולאורך הקריירה שלו עבד בחברות מובילות כמו אינטל, אמדוקס ואורקל.
                   </span>
 
                   <span className="block p-6 bg-white/70 backdrop-blur-sm rounded-xl border border-purple-100 shadow-sm hover:shadow-md transition-all duration-300 hover:border-purple-200 mt-4">
@@ -234,7 +234,7 @@ function App() {
                     <span className="font-semibold text-blue-700 px-2 py-1 bg-blue-50 rounded-md mx-1 inline-block hover:scale-105 transition-transform">
                       החל מתלמידים וסטודנטים ועד אנשי מקצוע
                     </span>. 
-                    בהרצאותיו, הוא מתמד בהשפעות המעשיות, העקיות והחברתיות של טכנולוגיות מתקדמות.
+                    בהרצאותיו, הוא מתמקד בהשפעות המעשיות, העסקיות והחברתיות של טכנולוגיות מתקדמות.
                   </span>
 
                   <span className="block p-6 bg-white/70 backdrop-blur-sm rounded-xl border border-indigo-100 shadow-sm hover:shadow-md transition-all duration-300 hover:border-indigo-200 mt-4">
@@ -243,7 +243,7 @@ function App() {
                       רקע ייחודי
                     </span> - 
                     את דרכו המקצועית החל דווקא בתחום הבידור, כשהופיע במחזות זמר בתל אביב, 
-                    שיחק בטלנובלה ואף עבד בצוות הבידור באית. לאחר סיום לימודיו בטכניון, 
+                    שיחק בטלנובלה ואף עבד בצוות הבידור באילת. לאחר סיום לימודיו בטכניון, 
                     עבר לתחום ההיי-טק.
                   </span>
 
