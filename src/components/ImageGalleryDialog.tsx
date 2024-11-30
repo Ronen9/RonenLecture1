@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogOverlay, DialogPortal, DialogTitle, DialogClose } from './ui/dialog';
 import { X, ArrowLeft, ArrowRight } from 'lucide-react';
 import { cn } from "../lib/utils";
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface ImageGalleryDialogProps {
   isOpen: boolean;
@@ -19,6 +19,36 @@ export function ImageGalleryDialog({
   onNavigate
 }: ImageGalleryDialogProps) {
   const [isLoading, setIsLoading] = useState(true);
+
+  // Preload next and previous images
+  useEffect(() => {
+    const preloadAdjacentImages = () => {
+      const adjacentIndexes = [
+        currentIndex - 1,
+        currentIndex + 1
+      ].filter(index => index >= 0 && index < images.length);
+
+      adjacentIndexes.forEach(index => {
+        const img = new Image();
+        img.src = images[index];
+      });
+    };
+
+    preloadAdjacentImages();
+  }, [currentIndex, images]);
+
+  // Memoize navigation handlers
+  const handlePrevious = useCallback(() => {
+    if (currentIndex > 0) {
+      onNavigate(currentIndex - 1);
+    }
+  }, [currentIndex, onNavigate]);
+
+  const handleNext = useCallback(() => {
+    if (currentIndex < images.length - 1) {
+      onNavigate(currentIndex + 1);
+    }
+  }, [currentIndex, images.length, onNavigate]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -39,22 +69,22 @@ export function ImageGalleryDialog({
           
           {/* Navigation Buttons */}
           <button
-            onClick={() => onNavigate(currentIndex - 1)}
+            onClick={handlePrevious}
             className={cn(
-              "absolute left-4 top-1/2 -translate-y-1/2 z-50",
-              "p-2 rounded-full bg-black/50 text-white",
+              "absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-50",
+              "p-3 sm:p-2 rounded-full bg-black/50 text-white",
               "hover:bg-black/70 transition-colors",
               "focus:outline-none focus:ring-2 focus:ring-white/20",
               currentIndex === 0 && "opacity-50 cursor-not-allowed"
             )}
             disabled={currentIndex === 0}
           >
-            <ArrowLeft className="h-6 w-6" />
+            <ArrowLeft className="h-8 w-8 sm:h-6 sm:w-6" />
             <span className="sr-only">תמונה קודמת</span>
           </button>
 
           <button
-            onClick={() => onNavigate(currentIndex + 1)}
+            onClick={handleNext}
             className={cn(
               "absolute right-4 top-1/2 -translate-y-1/2 z-50",
               "p-2 rounded-full bg-black/50 text-white",

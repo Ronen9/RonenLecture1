@@ -1,6 +1,5 @@
 import { Brain, BookOpen, Users, Calendar, Mail, X } from 'lucide-react';
-import { TopicCard } from './components/TopicCard';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -40,22 +39,34 @@ function App() {
   const [hoverText, setHoverText] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 
-  const handleCategoryClick = (category: string) => {
-    const selectedCategory = galleryCategories.find(cat => 
+  // Memoize the category finding function
+  const findCategory = useCallback((category: string) => {
+    return galleryCategories.find(cat => 
       category === 'students' ? cat.title === "תלמידים וסטודנטים" :
       category === 'business' ? cat.title === "אירועים שונים בתעשיה" : false
     );
+  }, []);
+
+  // Optimize handleCategoryClick
+  const handleCategoryClick = useCallback((category: string) => {
+    const selectedCategory = findCategory(category);
     if (selectedCategory) {
       setSelectedImages(selectedCategory.images.map(img => img.src));
       setCurrentImageIndex(0);
     }
     setIsOpen(true);
-  };
+  }, [findCategory]);
 
-  const handleNavigate = (newIndex: number) => {
+  // Optimize handleNavigate
+  const handleNavigate = useCallback((newIndex: number) => {
     setCurrentImageIndex(newIndex);
     setSelectedImage(selectedImages[newIndex]);
-  };
+  }, [selectedImages]);
+
+  // Memoize hover text handler
+  const handleHoverText = useCallback((text: string) => {
+    setHoverText(text);
+  }, []);
 
   return (
     <div dir="rtl" className="min-h-screen relative bg-gradient-to-b from-blue-50 via-white to-purple-50 overflow-hidden">
@@ -134,7 +145,7 @@ function App() {
                     <span className="font-semibold text-blue-700 px-2 py-1 bg-blue-50 rounded-md mx-1 inline-block hover:scale-105 transition-transform">
                       מוביל את תחום חווית הלקוח במיקרוסופט במחלקת BizApps
                     </span>, 
-                    ולאורך הקריירה שלו עבד בחברות מובילות כמו אינטל, אמדוקס ואורקל.
+                    ולאורך הקריירה שלו עבד בחברות מובילות כמו אנטל, אמדוקס ואורקל.
                   </span>
 
                   <span className="block p-6 bg-white/70 backdrop-blur-sm rounded-xl border border-purple-100 shadow-sm hover:shadow-md transition-all duration-300 hover:border-purple-200 mt-4">
@@ -150,7 +161,7 @@ function App() {
                     <span className="font-semibold text-purple-700 px-2 py-1 bg-purple-50 rounded-md mx-1 inline-block hover:scale-105 transition-transform">
                       רקע ייחודי
                     </span> - 
-                    את דרכו המקצועית החל דווקא בתחום הבידור, כשהו��יע במחזות זמר בתל אביב, 
+                    את דרכו המקצועית החל דווקא בתחום הבידור, כשהופיע במחזות זמר בתל אביב, 
                     שיחק בטלנובלה ואף עבד בצוות הבידור באית. לאחר סיום לימודיו בטכניון, 
                     עבר לתחום ההיי-טק.
                   </span>
@@ -177,7 +188,7 @@ function App() {
       <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-gray-800 mb-12 text-center">תחומי התמחות</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             {topics.map((topic, index) => (
               <Card 
                 key={index}
@@ -188,7 +199,8 @@ function App() {
                   "hover:border-blue-200/50",
                   "transition-all duration-300",
                   "hover:shadow-lg hover:shadow-blue-100/50",
-                  "transform hover:-translate-y-1"
+                  "transform hover:-translate-y-1",
+                  "mx-2 sm:mx-0"
                 )}
               >
                 <CardContent className="p-6">
@@ -229,8 +241,8 @@ function App() {
                 "cursor-pointer"
               )}
               onClick={() => handleCategoryClick('students')}
-              onMouseEnter={() => setHoverText('הרצאות לתלמידים וסטודנטים')}
-              onMouseLeave={() => setHoverText('')}
+              onMouseEnter={() => handleHoverText('הרצאות לתלמידים וסטודנטים')}
+              onMouseLeave={() => handleHoverText('')}
             >
               <CardContent className="p-0">
                 <div className="aspect-video relative overflow-hidden">
@@ -266,13 +278,13 @@ function App() {
                 "cursor-pointer"
               )}
               onClick={() => handleCategoryClick('business')}
-              onMouseEnter={() => setHoverText('הרצאות לעסקים וארגונים')}
-              onMouseLeave={() => setHoverText('')}
+              onMouseEnter={() => handleHoverText('הרצאות לעסקים וארגונים')}
+              onMouseLeave={() => handleHoverText('')}
             >
               <CardContent className="p-0">
                 <div className="aspect-video relative overflow-hidden">
                   <img 
-                    src={images.img7} 
+                    src={images.business17}
                     alt="קטגוריה עסקים" 
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
                   />
@@ -346,42 +358,44 @@ function App() {
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-8 sm:mb-12 text-center">צור קשר</h2>
           <div className="bg-white/70 backdrop-blur-sm rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-all duration-300 hover:border-blue-200 p-4 sm:p-8">
             <form className="space-y-4 sm:space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              <div className="space-y-3 sm:space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                  <div>
+                    <label className="block text-gray-700 text-sm sm:text-base mb-1 sm:mb-2">שם מלא</label>
+                    <input 
+                      type="text" 
+                      className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white/50 hover:bg-white text-base" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 text-sm sm:text-base mb-1 sm:mb-2">אימייל</label>
+                    <input 
+                      type="email" 
+                      className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white/50 hover:bg-white text-base" 
+                    />
+                  </div>
+                </div>
                 <div>
-                  <label className="block text-gray-700 text-sm sm:text-base mb-2">שם מלא</label>
+                  <label className="block text-gray-700 text-sm sm:text-base mb-1 sm:mb-2">נושא</label>
                   <input 
                     type="text" 
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white/50 hover:bg-white text-sm sm:text-base" 
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white/50 hover:bg-white text-base" 
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-700 text-sm sm:text-base mb-2">אימייל</label>
-                  <input 
-                    type="email" 
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white/50 hover:bg-white text-sm sm:text-base" 
-                  />
+                  <label className="block text-gray-700 text-sm sm:text-base mb-1 sm:mb-2">הודעה</label>
+                  <textarea 
+                    rows={4} 
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white/50 hover:bg-white text-base"
+                  ></textarea>
                 </div>
+                <button 
+                  type="submit" 
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 sm:py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1 text-sm sm:text-base"
+                >
+                  שליחה
+                </button>
               </div>
-              <div>
-                <label className="block text-gray-700 text-sm sm:text-base mb-2">נושא</label>
-                <input 
-                  type="text" 
-                  className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white/50 hover:bg-white text-sm sm:text-base" 
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 text-sm sm:text-base mb-2">ה��דעה</label>
-                <textarea 
-                  rows={4} 
-                  className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white/50 hover:bg-white text-sm sm:text-base"
-                ></textarea>
-              </div>
-              <button 
-                type="submit" 
-                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 sm:py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1 text-sm sm:text-base"
-              >
-                שליחה
-              </button>
             </form>
           </div>
         </div>
@@ -396,15 +410,15 @@ function App() {
 
       {/* Display Hover Text */}
       {hoverText && (
-        <div className="absolute top-0 left-0 p-4 bg-gray-800 text-white rounded">
+        <div className="fixed bottom-4 left-4 right-4 sm:absolute sm:top-0 sm:left-0 sm:right-auto p-4 bg-gray-800 text-white rounded text-center sm:text-left">
           {hoverText}
         </div>
       )}
 
       {/* Example of an element that sets hoverText */}
       <div
-        onMouseEnter={() => setHoverText('Your hover text here')}
-        onMouseLeave={() => setHoverText('')}
+        onMouseEnter={() => handleHoverText('Your hover text here')}
+        onMouseLeave={() => handleHoverText('')}
       >
         {/* Your content here */}
       </div>

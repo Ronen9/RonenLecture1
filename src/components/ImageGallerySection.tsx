@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import {
   Dialog,
@@ -8,20 +8,42 @@ import {
 } from "./ui/dialog";
 import { cn } from "../lib/utils";
 
-// Import images with relative paths
+// Update image imports
 export const images = {
-  img1: new URL('../assets/1.jpg', import.meta.url).href,
-  img2: new URL('../assets/2.jpeg', import.meta.url).href,
-  img3: new URL('../assets/3.jpg', import.meta.url).href,
-  img4: new URL('../assets/4.jpg', import.meta.url).href,
-  img5: new URL('../assets/5.jpg', import.meta.url).href,
-  img6: new URL('../assets/6.jpg', import.meta.url).href,
-  img7: new URL('../assets/7.jpg', import.meta.url).href,
-  img8: new URL('../assets/8.jpg', import.meta.url).href,
-  img9: new URL('../assets/9.jpg', import.meta.url).href,
-  img10: new URL('../assets/10.jpg', import.meta.url).href,
-  img11: new URL('../assets/11.jpg', import.meta.url).href,
-  img12: new URL('../assets/12.jpg', import.meta.url).href,
+  // Student images
+  img1: new URL('../assets/students/1.jpg', import.meta.url).href,
+  img2: new URL('../assets/students/2.jpeg', import.meta.url).href,
+  img3: new URL('../assets/students/3.jpg', import.meta.url).href,
+  img4: new URL('../assets/students/4.jpg', import.meta.url).href,
+  img5: new URL('../assets/students/5.jpg', import.meta.url).href,
+  img6: new URL('../assets/students/6.jpg', import.meta.url).href,
+  img7: new URL('../assets/students/7.jpg', import.meta.url).href,
+  img8: new URL('../assets/students/8.jpg', import.meta.url).href,
+  img9: new URL('../assets/students/9.jpg', import.meta.url).href,
+  img10: new URL('../assets/students/10.jpg', import.meta.url).href,
+  img11: new URL('../assets/students/11.jpg', import.meta.url).href,
+  img12: new URL('../assets/students/12.jpg', import.meta.url).href,
+  // Business images
+  business1: new URL('../assets/business/image-001.jpg', import.meta.url).href,
+  business2: new URL('../assets/business/image-002.jpg', import.meta.url).href,
+  business3: new URL('../assets/business/image-003.jpg', import.meta.url).href,
+  business4: new URL('../assets/business/image-004.jpg', import.meta.url).href,
+  business5: new URL('../assets/business/image-005.jpg', import.meta.url).href,
+  business6: new URL('../assets/business/image-006.jpg', import.meta.url).href,
+  business7: new URL('../assets/business/image-007.jpg', import.meta.url).href,
+  business8: new URL('../assets/business/image-008.jpg', import.meta.url).href,
+  business9: new URL('../assets/business/image-009.jpg', import.meta.url).href,
+  business10: new URL('../assets/business/image-010.jpg', import.meta.url).href,
+  business11: new URL('../assets/business/image-011.jpg', import.meta.url).href,
+  business12: new URL('../assets/business/image-012.jpg', import.meta.url).href,
+  business13: new URL('../assets/business/image-013.jpg', import.meta.url).href,
+  business14: new URL('../assets/business/image-014.jpg', import.meta.url).href,
+  business15: new URL('../assets/business/image-015.jpg', import.meta.url).href,
+  business16: new URL('../assets/business/image-016.jpg', import.meta.url).href,
+  business17: new URL('../assets/business/image-017.jpg', import.meta.url).href,
+  business18: new URL('../assets/business/image-018.jpg', import.meta.url).href,
+  business19: new URL('../assets/business/image-019.jpg', import.meta.url).href,
+  // Other images
   ronenCNN: new URL('../assets/RonenCNN.png', import.meta.url).href,
 };
 
@@ -67,7 +89,7 @@ export const galleryCategories: GalleryCategory[] = [
       },
       {
         src: images.img7,
-        description: "הרצאה על AI בתעשייה"
+        description: "הרצאה על AI בתעשיה"
       },
       {
         src: images.img8,
@@ -92,16 +114,52 @@ export const galleryCategories: GalleryCategory[] = [
     ]
   },
   {
-    coverImage: images.ronenCNN,
+    coverImage: images.business1,
     title: "אירועים שונים בתעשיה",
-    images: [] // נוסיף תמונות מאוחר יותר
+    images: [
+      { src: images.business1, description: "הרצאה בכנס טכנולוגי" },
+      { src: images.business2, description: "מפגש מנהלים בתעשייה" },
+      { src: images.business3, description: "סדנת AI למנהלים" },
+      { src: images.business4, description: "כנס חדשנות בתעשייה" },
+      { src: images.business5, description: "הרצאה על טרנספורמציה דיגיטלית" },
+      { src: images.business6, description: "פאנל מומחים בתחום ה-AI" },
+      { src: images.business7, description: "סדנת חדשנות לארגונים" },
+      { src: images.business8, description: "הרצאה על עתיד העבודה" },
+      { src: images.business9, description: "כנס טכנולוגיות מתקדמות" },
+      { src: images.business10, description: "מפגש מקצועי בתעשייה" },
+      { src: images.business11, description: "הרצאה על מגמות טכנולוגיות" },
+      { src: images.business12, description: "סדנת חדשנות ארגונית" },
+      { src: images.business13, description: "כנס מובילי דיגיטל" },
+      { src: images.business14, description: "הרצאה על טרנספורמציה ארגונית" },
+      { src: images.business15, description: "פורום מנהלי טכנולוגיה" },
+      { src: images.business16, description: "סדנת מנהיגות טכנולוגית" },
+      { src: images.business17, description: "כנס חדשנות ו-AI" },
+      { src: images.business18, description: "מפגש מובילי תעשייה" }
+    ]
   }
 ];
 
-// Add image preloading
+// Add image preloading function
+const preloadImages = (imageSources: string[]) => {
+  imageSources.forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
+};
 
 export default function ImageGallerySection() {
   const [selectedImage, setSelectedImage] = useState<{src: string; description: string} | null>(null);
+
+  // Preload images on component mount
+  useEffect(() => {
+    const allImages = [
+      ...Object.values(images),
+      ...galleryCategories.flatMap(category => 
+        category.images.map(img => img.src)
+      )
+    ];
+    preloadImages(allImages);
+  }, []);
 
   // Use in handleCategoryClick
 
