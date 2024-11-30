@@ -98,8 +98,12 @@ export const galleryCategories: GalleryCategory[] = [
   }
 ];
 
+// Add image preloading
+
 export default function ImageGallerySection() {
   const [selectedImage, setSelectedImage] = useState<{src: string; description: string} | null>(null);
+
+  // Use in handleCategoryClick
 
   return (
     <section className="py-20 px-6 bg-gray-50">

@@ -1,4 +1,4 @@
-import { Brain, BookOpen, Users, Calendar, Mail, X, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Brain, BookOpen, Users, Calendar, Mail, X } from 'lucide-react';
 import { TopicCard } from './components/TopicCard';
 import { useState } from 'react';
 import {
@@ -6,12 +6,12 @@ import {
   DialogContent,
   DialogOverlay,
   DialogPortal,
-  DialogTitle,
   DialogClose,
 } from './components/ui/dialog';
 import { images, galleryCategories } from './components/ImageGallerySection';
 import { Card, CardContent } from "./components/ui/card";
 import { cn } from "./lib/utils";
+import { ImageGalleryDialog } from './components/ImageGalleryDialog';
 
 
 
@@ -50,6 +50,11 @@ function App() {
       setCurrentImageIndex(0);
     }
     setIsOpen(true);
+  };
+
+  const handleNavigate = (newIndex: number) => {
+    setCurrentImageIndex(newIndex);
+    setSelectedImage(selectedImages[newIndex]);
   };
 
   return (
@@ -155,7 +160,7 @@ function App() {
                     <span className="font-semibold text-green-700 px-2 py-1 bg-green-50 rounded-md mx-1 inline-block hover:scale-105 transition-transform">
                       בתחרות Technical Story Telling באורקל בשבדיה
                     </span>, 
-                    שם שילב באופן יצירתי את ריקוד הסלסה כמטאפורה למוצרי שיווק טכנולוגיים. כיום הוא מרצה בושאים כמו 
+                    שם שילב באופן יצירתי את ריקוד הסלסה כמטאפורה למוצרי שיווק טכנולוגיים. כיום הוא מרצה בנושאים כמו 
                     <span className="font-semibold text-blue-700 px-2 py-1 bg-blue-50 rounded-md mx-1 inline-block hover:scale-105 transition-transform">
                       שיווק דיגיטלי מתקדם ו-CRM Sales בעידן הבינה המלאכותית
                     </span> 
@@ -295,78 +300,13 @@ function App() {
 
       {/* Full Image Dialog */}
       {selectedImage && (
-        <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
-          <DialogPortal>
-            <DialogOverlay className="bg-black/90 backdrop-blur-sm" />
-            <DialogContent className={cn(
-              "w-[95vw] h-[95vh]",
-              "max-w-[95vw] max-h-[95vh]",
-              "p-0 bg-transparent border-none",
-              "overflow-hidden",
-              "my-4"
-            )}>
-              <DialogTitle className="sr-only">תצוגה מורחבת של תמונה</DialogTitle>
-              <DialogClose className="absolute right-4 top-4 z-50 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition-colors">
-                <X className="h-4 w-4" />
-                <span className="sr-only">סגור</span>
-              </DialogClose>
-              
-              {/* Navigation Buttons */}
-              <button
-                onClick={() => {
-                  const newIndex = (currentImageIndex - 1 + selectedImages.length) % selectedImages.length;
-                  setCurrentImageIndex(newIndex);
-                  setSelectedImage(selectedImages[newIndex]);
-                }}
-                className={cn(
-                  "absolute left-4 top-1/2 -translate-y-1/2 z-50",
-                  "p-2 rounded-full bg-black/50 text-white",
-                  "hover:bg-black/70 transition-colors",
-                  "focus:outline-none focus:ring-2 focus:ring-white/20",
-                  currentImageIndex === 0 && "opacity-50 cursor-not-allowed"
-                )}
-                disabled={currentImageIndex === 0}
-              >
-                <ArrowLeft className="h-6 w-6" />
-                <span className="sr-only">תמונה קודמת</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  const newIndex = (currentImageIndex + 1) % selectedImages.length;
-                  setCurrentImageIndex(newIndex);
-                  setSelectedImage(selectedImages[newIndex]);
-                }}
-                className={cn(
-                  "absolute right-4 top-1/2 -translate-y-1/2 z-50",
-                  "p-2 rounded-full bg-black/50 text-white",
-                  "hover:bg-black/70 transition-colors",
-                  "focus:outline-none focus:ring-2 focus:ring-white/20",
-                  currentImageIndex === selectedImages.length - 1 && "opacity-50 cursor-not-allowed"
-                )}
-                disabled={currentImageIndex === selectedImages.length - 1}
-              >
-                <ArrowRight className="h-6 w-6" />
-                <span className="sr-only">תמונה הבאה</span>
-              </button>
-
-              {/* Image Container */}
-              <div className="w-full h-full flex items-center justify-center p-4">
-                <img
-                  src={selectedImage}
-                  alt="תמונה מוגדלת"
-                  className="max-w-full max-h-full w-auto h-auto object-contain"
-                  style={{ maxHeight: 'calc(95vh - 2rem)' }}
-                />
-              </div>
-
-              {/* Image Counter */}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 text-white px-4 py-2 rounded-full">
-                {currentImageIndex + 1} / {selectedImages.length}
-              </div>
-            </DialogContent>
-          </DialogPortal>
-        </Dialog>
+        <ImageGalleryDialog
+          isOpen={!!selectedImage}
+          onClose={() => setSelectedImage(null)}
+          images={selectedImages}
+          currentIndex={currentImageIndex}
+          onNavigate={handleNavigate}
+        />
       )}
 
       {/* Contact Form */}
