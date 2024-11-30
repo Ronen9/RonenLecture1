@@ -41,7 +41,10 @@ function App() {
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 
   const handleCategoryClick = (category: string) => {
-    const selectedCategory = galleryCategories.find(cat => cat.title === "תלמידים וסטודנטים");
+    const selectedCategory = galleryCategories.find(cat => 
+      category === 'students' ? cat.title === "תלמידים וסטודנטים" :
+      category === 'business' ? cat.title === "אירועים שונים בתעשיה" : false
+    );
     if (selectedCategory) {
       setSelectedImages(selectedCategory.images.map(img => img.src));
       setCurrentImageIndex(0);
@@ -152,7 +155,7 @@ function App() {
                     <span className="font-semibold text-green-700 px-2 py-1 bg-green-50 rounded-md mx-1 inline-block hover:scale-105 transition-transform">
                       בתחרות Technical Story Telling באורקל בשבדיה
                     </span>, 
-                    שם שילב באופן יצירתי את ריקוד הסלסה כמטאפורה למוצרי שיווק טכנולוגיים. כיום הוא מרצה בנושאים כמו 
+                    שם שילב באופן יצירתי את ריקוד הסלסה כמטאפורה למוצרי שיווק טכנולוגיים. כיום הוא מרצה ב��ושאים כמו 
                     <span className="font-semibold text-blue-700 px-2 py-1 bg-blue-50 rounded-md mx-1 inline-block hover:scale-105 transition-transform">
                       שיווק דיגיטלי מתקדם ו-CRM Sales בעידן הבינה המלאכותית
                     </span> 
