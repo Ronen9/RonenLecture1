@@ -17,17 +17,17 @@ import { ImageGalleryDialog } from './components/ImageGalleryDialog';
 
 const topics = [
   {
-    icon: <Brain className="w-8 h-8 text-blue-600" />,
+    icon: <Brain className="w-10 h-10 text-blue-500" />,
     title: "בינה מלאכותית",
     description: "מומחה בהנגשת טכנולוגיות AI מתקדמות לקהלים מגוונים, כולל יישומים מעשיים בכלי בינה מלאכותית כמו יצירת שירים, הנפשת תמונות, יצירת קטעי וידאו ועד סביבות פיתוח"
   },
   {
-    icon: <BookOpen className="w-8 h-8 text-blue-600" />,
+    icon: <BookOpen className="w-10 h-10 text-purple-500" />,
     title: "חווית לקוח",
     description: "מוביל תחום Customer Experience במיקרוסופט, התמחות ב-CRM ושיווק דיגיטלי מתקדם"
   },
   {
-    icon: <Users className="w-8 h-8 text-blue-600" />,
+    icon: <Users className="w-10 h-10 text-indigo-500" />,
     title: "הרצאות וסדנאות",
     description: "ניסיון עשיר בהעברת תכנים מורכבים באופן מעניין ונגיש, שילוב ייחודי של טכנולוגיה ובידור"
   }
@@ -150,7 +150,7 @@ function App() {
                     <span className="font-semibold text-purple-700 px-2 py-1 bg-purple-50 rounded-md mx-1 inline-block hover:scale-105 transition-transform">
                       רקע ייחודי
                     </span> - 
-                    את דרכו המקצועית החל דווקא בתחום הבידור, כשהופיע במחזות זמר בתל אביב, 
+                    את דרכו המקצועית החל דווקא בתחום הבידור, כשהו��יע במחזות זמר בתל אביב, 
                     שיחק בטלנובלה ואף עבד בצוות הבידור באית. לאחר סיום לימודיו בטכניון, 
                     עבר לתחום ההיי-טק.
                   </span>
@@ -174,12 +174,43 @@ function App() {
       </section>
 
       {/* Topics Section */}
-      <section className="bg-white py-12 sm:py-20 px-4 sm:px-6">
+      <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-8 sm:mb-12 text-center">תחומי התמחות</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
+          <h2 className="text-3xl font-bold text-gray-800 mb-12 text-center">תחומי התמחות</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {topics.map((topic, index) => (
-              <TopicCard key={index} {...topic} />
+              <Card 
+                key={index}
+                className={cn(
+                  "group relative overflow-hidden",
+                  "bg-white/50 backdrop-blur-sm",
+                  "border border-gray-200/50",
+                  "hover:border-blue-200/50",
+                  "transition-all duration-300",
+                  "hover:shadow-lg hover:shadow-blue-100/50",
+                  "transform hover:-translate-y-1"
+                )}
+              >
+                <CardContent className="p-6">
+                  <div className="mb-6 flex justify-center">
+                    <div className={cn(
+                      "p-3 rounded-xl",
+                      "bg-gradient-to-br from-white to-gray-50",
+                      "shadow-inner",
+                      "group-hover:scale-110 transition-transform duration-300",
+                      "border border-gray-100"
+                    )}>
+                      {topic.icon}
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-3 text-center">
+                    {topic.title}
+                  </h3>
+                  <p className="text-gray-600 text-center leading-relaxed">
+                    {topic.description}
+                  </p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
@@ -339,7 +370,7 @@ function App() {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 text-sm sm:text-base mb-2">הודעה</label>
+                <label className="block text-gray-700 text-sm sm:text-base mb-2">ה��דעה</label>
                 <textarea 
                   rows={4} 
                   className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white/50 hover:bg-white text-sm sm:text-base"
