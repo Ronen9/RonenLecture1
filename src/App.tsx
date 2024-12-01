@@ -12,7 +12,7 @@ import { Card, CardContent } from "./components/ui/card";
 import { cn } from "./lib/utils";
 import { ImageGalleryDialog } from './components/ImageGalleryDialog';
 import ronenThumbnail from './assets/ronenThumbnail-CNN.jpg';
-import ecommerceEventThumbnail from './assets/ecommerce Event with AI.jpg';
+import ecommerceEventThumbnail from './assets/ecommerce-event-with-ai.jpg';
 
 
 
@@ -49,10 +49,6 @@ const videos = [
   }
 ];
 
-const getYouTubeEmbedUrl = (url: string) => {
-  const videoId = url.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=|\/watch\?.+&v=))([\w-]{11})/);
-  return videoId ? `https://www.youtube.com/embed/${videoId[1]}` : url;
-};
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
