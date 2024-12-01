@@ -1,4 +1,4 @@
-import { Brain, BookOpen, Users, Calendar, Mail, X } from 'lucide-react';
+import { Brain, BookOpen, Users, Calendar, Mail, X, PlayCircle } from 'lucide-react';
 import { useState, useCallback, FormEvent } from 'react';
 import {
   Dialog,
@@ -11,6 +11,8 @@ import { images, galleryCategories } from './components/ImageGallerySection';
 import { Card, CardContent } from "./components/ui/card";
 import { cn } from "./lib/utils";
 import { ImageGalleryDialog } from './components/ImageGalleryDialog';
+import ronenThumbnail from './assets/ronenThumbnail-CNN.jpg';
+import ecommerceEventThumbnail from './assets/ecommerce Event with AI.jpg';
 
 
 
@@ -32,11 +34,30 @@ const topics = [
   }
 ];
 
+const videos = [
+  {
+    title: "סטוריטלינג בעידן הדיגיטלי",
+    url: "https://www.youtube.com/embed/NnN2rIhe6ps",
+    thumbnail: ronenThumbnail,
+    description: "הרצאה מרתקת על סטוריטלינג והעברת מסרים בצורה אפקטיבית"
+  },
+  {
+    title: "עתיד המסחר האלקטרוני",
+    url: "https://www.youtube.com/embed/vO_Fprisci4",
+    thumbnail: ecommerceEventThumbnail,
+    description: "הרצאה בכנס GOeCommerce על עתיד המסחר האלקטרוני וחווית הלקוח"
+  }
+];
+
+const getYouTubeEmbedUrl = (url: string) => {
+  const videoId = url.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=|\/watch\?.+&v=))([\w-]{11})/);
+  return videoId ? `https://www.youtube.com/embed/${videoId[1]}` : url;
+};
+
 function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [hoverText, setHoverText] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 
   // Add form state
@@ -53,6 +74,8 @@ function App() {
     subject: '',
     message: ''
   });
+
+  const [isPlaying, setIsPlaying] = useState<{ [key: string]: boolean }>({});
 
   // Email validation function
   const isValidEmail = (email: string) => {
@@ -143,11 +166,6 @@ function App() {
     setCurrentImageIndex(newIndex);
     setSelectedImage(selectedImages[newIndex]);
   }, [selectedImages]);
-
-  // Memoize hover text handler
-  const handleHoverText = useCallback((text: string) => {
-    setHoverText(text);
-  }, []);
 
   return (
     <div dir="rtl" className="min-h-screen relative bg-gradient-to-b from-blue-50 via-white to-purple-50 overflow-hidden">
@@ -309,6 +327,65 @@ function App() {
         </div>
       </section>
 
+      {/* Videos Section */}
+      <section className="py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold text-gray-800 mb-12 text-center">סרטונים נבחרים</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {videos.map((video, index) => (
+              <Card 
+                key={index}
+                className={cn(
+                  "group relative overflow-hidden",
+                  "bg-white/50 backdrop-blur-sm",
+                  "border border-gray-200/50",
+                  "hover:border-blue-200/50",
+                  "transition-all duration-300",
+                  "hover:shadow-lg hover:shadow-blue-100/50",
+                )}
+              >
+                <CardContent className="p-0">
+                  <div className="relative aspect-video">
+                    {!isPlaying[video.url] ? (
+                      <>
+                        <div 
+                          className="absolute inset-0 bg-black/10 hover:bg-black/30 transition-all duration-300 flex items-center justify-center cursor-pointer z-10"
+                          onClick={() => setIsPlaying(prev => ({ ...prev, [video.url]: true }))}
+                        >
+                          <div className="bg-blue-600/90 hover:bg-blue-700 rounded-full p-4 transform hover:scale-110 transition-all duration-300">
+                            <PlayCircle className="w-12 h-12 text-white" />
+                          </div>
+                        </div>
+                        <img 
+                          src={video.thumbnail} 
+                          alt={video.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </>
+                    ) : (
+                      <iframe
+                        src={`${video.url}?autoplay=1`}
+                        className="absolute inset-0 w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    )}
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                      {video.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm">
+                      {video.description}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Gallery Section */}
       <section className="py-20 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
@@ -322,8 +399,6 @@ function App() {
                 "cursor-pointer"
               )}
               onClick={() => handleCategoryClick('students')}
-              onMouseEnter={() => handleHoverText('הרצאות לתלמידים וסטודנטים')}
-              onMouseLeave={() => handleHoverText('')}
             >
               <CardContent className="p-0">
                 <div className="aspect-video relative overflow-hidden">
@@ -359,8 +434,6 @@ function App() {
                 "cursor-pointer"
               )}
               onClick={() => handleCategoryClick('business')}
-              onMouseEnter={() => handleHoverText('הרצאות לעסקים וארגונים')}
-              onMouseLeave={() => handleHoverText('')}
             >
               <CardContent className="p-0">
                 <div className="aspect-video relative overflow-hidden">
@@ -380,7 +453,7 @@ function App() {
                         הרצאות לעסקים וארגונים
                       </span>
                       <span className="text-purple-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300 block">
-                        לחץ לצפייה בגלריה
+                        לחץ לצפייה בגליה
                       </span>
                     </div>
                   </div>
@@ -548,21 +621,6 @@ function App() {
           <p className="text-sm sm:text-base">© {new Date().getFullYear()} רונן ארנרייך. כל הזכויות שמורות.</p>
         </div>
       </footer>
-
-      {/* Display Hover Text */}
-      {hoverText && (
-        <div className="fixed bottom-4 left-4 right-4 sm:absolute sm:top-0 sm:left-0 sm:right-auto p-4 bg-gray-800 text-white rounded text-center sm:text-left">
-          {hoverText}
-        </div>
-      )}
-
-      {/* Example of an element that sets hoverText */}
-      <div
-        onMouseEnter={() => handleHoverText('Your hover text here')}
-        onMouseLeave={() => handleHoverText('')}
-      >
-        {/* Your content here */}
-      </div>
     </div>
   );
 }
