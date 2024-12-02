@@ -1,126 +1,151 @@
 import { FC } from 'react';
-import { cn } from '../../lib/utils';
-import { useForm } from '../../hooks/useForm';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Mail, Phone, Send } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 const ContactSection: FC = () => {
-  const {
-    formData,
-    formErrors,
-    handleInputChange,
-    handleInputBlur,
-    handleSubmit
-  } = useForm({
-    fullName: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle form submission
+  };
 
   return (
-    <section className="py-12 sm:py-20 px-4 sm:px-6">
-      <div className="max-w-3xl mx-auto">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-8 sm:mb-12 text-center">צור קשר</h2>
-        <div className="bg-white/70 backdrop-blur-sm rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-all duration-300 hover:border-blue-200 p-4 sm:p-8">
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-            <div className="space-y-3 sm:space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+    <section className="py-20 px-6">
+      <div className="max-w-6xl mx-auto">
+        <motion.h2 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-2xl sm:text-3xl font-bold mb-8 sm:mb-12 text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+        >
+          צור קשר
+        </motion.h2>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
+          {/* Contact Info */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Card className={cn(
+              "h-full p-6 sm:p-8",
+              "bg-gradient-to-br from-white/80 to-white/40 backdrop-blur-sm",
+              "border-0 shadow-xl shadow-blue-100/20",
+              "hover:shadow-2xl hover:shadow-blue-200/30 transition-all duration-300"
+            )}>
+              <div className="space-y-6">
                 <div>
-                  <label className="block text-gray-700 text-sm sm:text-base mb-1 sm:mb-2">
-                    שם מלא
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <input 
-                    type="text"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleInputChange}
-                    onBlur={handleInputBlur}
-                    className={cn(
-                      "w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 focus:ring-2 transition-all duration-300 bg-white/50 hover:bg-white text-base",
-                      formErrors.fullName 
-                        ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                        : "border-gray-200 focus:border-blue-400 focus:ring-blue-200"
-                    )}
-                  />
-                  {formErrors.fullName && (
-                    <p className="mt-1 text-sm text-red-500">{formErrors.fullName}</p>
-                  )}
+                  <h3 className="text-xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    פרטי התקשרות
+                  </h3>
+                  <div className="space-y-4">
+                    <motion.div 
+                      className="flex items-center gap-3 p-3 bg-white/80 rounded-lg hover:bg-blue-50/80 transition-all duration-300 group"
+                      whileHover={{ scale: 1.02 }}
+                    >
+                      <Mail className="w-5 h-5 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
+                      <span className="text-gray-700">ronener@gmail.com</span>
+                    </motion.div>
+                    <motion.div 
+                      className="flex items-center gap-3 p-3 bg-white/80 rounded-lg hover:bg-blue-50/80 transition-all duration-300 group"
+                      whileHover={{ scale: 1.02 }}
+                    >
+                      <Phone className="w-5 h-5 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
+                      <span className="text-gray-700">+972-50-123-4567</span>
+                    </motion.div>
+                  </div>
                 </div>
+
                 <div>
-                  <label className="block text-gray-700 text-sm sm:text-base mb-1 sm:mb-2">
-                    אימייל
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <input 
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    onBlur={handleInputBlur}
-                    className={cn(
-                      "w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 focus:ring-2 transition-all duration-300 bg-white/50 hover:bg-white text-base",
-                      formErrors.email 
-                        ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                        : "border-gray-200 focus:border-blue-400 focus:ring-blue-200"
-                    )}
-                  />
-                  {formErrors.email && (
-                    <p className="mt-1 text-sm text-red-500">{formErrors.email}</p>
-                  )}
+                  <h3 className="text-xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    זמינות להרצאות
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    אני זמין להרצאות בנושאי בינה מלאכותית, טכנולוגיה ושיווק דיגיטלי ברחבי הארץ.
+                    ניתן לתאם הרצאות לארגונים, חברות, מוסדות חינוך ואירועים מקצועיים.
+                  </p>
                 </div>
               </div>
-              <div>
-                <label className="block text-gray-700 text-sm sm:text-base mb-1 sm:mb-2">
-                  נושא
-                  <span className="text-red-500">*</span>
-                </label>
-                <input 
-                  type="text"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleInputChange}
-                  onBlur={handleInputBlur}
-                  className={cn(
-                    "w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 focus:ring-2 transition-all duration-300 bg-white/50 hover:bg-white text-base",
-                    formErrors.subject 
-                      ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                      : "border-gray-200 focus:border-blue-400 focus:ring-blue-200"
-                  )}
-                />
-                {formErrors.subject && (
-                  <p className="mt-1 text-sm text-red-500">{formErrors.subject}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-gray-700 text-sm sm:text-base mb-1 sm:mb-2">
-                  הודעה
-                  <span className="text-red-500">*</span>
-                </label>
-                <textarea 
-                  rows={4}
-                  name="message"
-                  value={formData.message}
-                  onChange={handleInputChange}
-                  onBlur={handleInputBlur}
-                  className={cn(
-                    "w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 focus:ring-2 transition-all duration-300 bg-white/50 hover:bg-white text-base",
-                    formErrors.message 
-                      ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                      : "border-gray-200 focus:border-blue-400 focus:ring-blue-200"
-                  )}
-                />
-                {formErrors.message && (
-                  <p className="mt-1 text-sm text-red-500">{formErrors.message}</p>
-                )}
-              </div>
-              <button 
-                type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 sm:py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1 text-sm sm:text-base"
-              >
-                שליחה
-              </button>
-            </div>
-          </form>
+            </Card>
+          </motion.div>
+
+          {/* Contact Form */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Card className={cn(
+              "h-full p-6 sm:p-8",
+              "bg-gradient-to-br from-white/80 to-white/40 backdrop-blur-sm",
+              "border-0 shadow-xl shadow-purple-100/20",
+              "hover:shadow-2xl hover:shadow-purple-200/30 transition-all duration-300"
+            )}>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-4">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
+                  >
+                    <label className="block text-sm font-medium text-gray-700 mb-1">שם מלא</label>
+                    <Input
+                      type="text"
+                      required
+                      className="w-full bg-white/70 focus:bg-white transition-colors"
+                      placeholder="הכנס את שמך המלא"
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.2 }}
+                  >
+                    <label className="block text-sm font-medium text-gray-700 mb-1">אימייל</label>
+                    <Input
+                      type="email"
+                      required
+                      className="w-full bg-white/70 focus:bg-white transition-colors"
+                      placeholder="הכנס את כתובת האימייל שלך"
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.3 }}
+                  >
+                    <label className="block text-sm font-medium text-gray-700 mb-1">הודעה</label>
+                    <Textarea
+                      required
+                      className="w-full min-h-[150px] bg-white/70 focus:bg-white transition-colors"
+                      placeholder="כתוב את הודעתך כאן..."
+                    />
+                  </motion.div>
+                </div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.4 }}
+                >
+                  <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-all duration-300"
+                  >
+                    <Send className="w-4 h-4 mr-2" />
+                    שלח הודעה
+                  </Button>
+                </motion.div>
+              </form>
+            </Card>
+          </motion.div>
         </div>
       </div>
     </section>
