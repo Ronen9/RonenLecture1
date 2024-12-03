@@ -5,21 +5,22 @@ import { cn } from '@/lib/utils';
 import { X, ChevronRight, ChevronLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-// תמונות מייצגות לכל קטגוריה
-const THUMBNAIL_STUDENTS = '/src/assets/students/1.jpg';
-const THUMBNAIL_BUSINESS = '/src/assets/business/image-001.jpg';
-
-// מערכי תמונות לכל קטגוריה
+// Import all student images
 const studentImages = Array.from({ length: 12 }, (_, i) => {
   const num = i + 1;
   const ext = num === 2 ? 'jpeg' : 'jpg';
-  return `/src/assets/students/${num}.${ext}`;
+  return new URL(`../../assets/students/${num}.${ext}`, import.meta.url).href;
 });
 
+// Import all business images
 const businessImages = Array.from({ length: 19 }, (_, i) => {
   const num = String(i + 1).padStart(3, '0');
-  return `/src/assets/business/image-${num}.jpg`;
+  return new URL(`../../assets/business/image-${num}.jpg`, import.meta.url).href;
 });
+
+// Use the first image of each category as thumbnail
+const THUMBNAIL_STUDENTS = studentImages[0];
+const THUMBNAIL_BUSINESS = businessImages[0];
 
 export const galleryCategories = [
   {
