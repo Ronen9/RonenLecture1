@@ -10,10 +10,12 @@ import { Mail, Phone, Send, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { contactFormSchema, type ContactFormData } from '@/lib/validations/contact';
+import { supabase } from '@/lib/supabase';
 
 const ContactSection: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
@@ -48,25 +50,39 @@ const ContactSection: FC = () => {
   }, []);
 
   const onSubmit = async (data: ContactFormData) => {
-    console.log('Starting form submission');
     setIsSubmitting(true);
+    setSubmitError(null);
+    
     try {
-      console.log('Form data:', data);
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const { error } = await supabase
+        .from('contact_submissions')
+        .insert([
+          {
+            name: data.fullName,
+            email: data.email,
+            message: data.message,
+            submitted_at: new Date().toISOString()
+          }
+        ]);
+
+      if (error) {
+        throw new Error(error.message);
+      }
       
-      console.log('Setting success states');
+      // Show success UI
       setSubmitSuccess(true);
       setShowConfetti(true);
       reset();
       
-      console.log('Starting timeout');
+      // Reset success state after delay
       setTimeout(() => {
-        console.log('Cleanup after timeout');
         setShowConfetti(false);
         setSubmitSuccess(false);
       }, 3000);
     } catch (error) {
       console.error('Error submitting form:', error);
+      setSubmitError(error instanceof Error ? error.message : 'An error occurred while submitting the form');
+      setSubmitSuccess(false);
     } finally {
       setIsSubmitting(false);
     }
@@ -248,6 +264,17 @@ const ContactSection: FC = () => {
                       </>
                     )}
                   </Button>
+
+                  {submitError && (
+                    <motion.p
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="text-center text-red-600 font-medium mt-4"
+                    >
+                      {submitError}
+                    </motion.p>
+                  )}
 
                   {submitSuccess && (
                     <motion.p
