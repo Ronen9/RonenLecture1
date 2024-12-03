@@ -1,20 +1,90 @@
-import { FC } from 'react';
+import { FC, useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import ReactConfetti from 'react-confetti';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Mail, Phone, Send } from 'lucide-react';
+import { Mail, Phone, Send, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { contactFormSchema, type ContactFormData } from '@/lib/validations/contact';
 
 const ContactSection: FC = () => {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm<ContactFormData>({
+    resolver: zodResolver(contactFormSchema),
+    mode: 'onChange',
+    defaultValues: {
+      fullName: '',
+      email: '',
+      message: ''
+    }
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const onSubmit = async (data: ContactFormData) => {
+    console.log('Starting form submission');
+    setIsSubmitting(true);
+    try {
+      console.log('Form data:', data);
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      console.log('Setting success states');
+      setSubmitSuccess(true);
+      setShowConfetti(true);
+      reset();
+      
+      console.log('Starting timeout');
+      setTimeout(() => {
+        console.log('Cleanup after timeout');
+        setShowConfetti(false);
+        setSubmitSuccess(false);
+      }, 3000);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <section className="py-20 px-6">
+      {showConfetti && (
+        <ReactConfetti
+          width={windowSize.width}
+          height={windowSize.height}
+          recycle={false}
+          numberOfPieces={200}
+          gravity={0.2}
+          colors={['#2563eb', '#7c3aed', '#ec4899', '#f59e0b']}
+        />
+      )}
+      
       <div className="max-w-6xl mx-auto">
         <motion.h2 
           initial={{ opacity: 0, y: 20 }}
@@ -86,7 +156,7 @@ const ContactSection: FC = () => {
               "border-0 shadow-xl shadow-purple-100/20",
               "hover:shadow-2xl hover:shadow-purple-200/30 transition-all duration-300"
             )}>
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-4">
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -95,11 +165,16 @@ const ContactSection: FC = () => {
                   >
                     <label className="block text-sm font-medium text-gray-700 mb-1">שם מלא</label>
                     <Input
-                      type="text"
-                      required
-                      className="w-full bg-white/70 focus:bg-white transition-colors"
+                      {...register('fullName')}
+                      className={cn(
+                        "w-full bg-white/70 focus:bg-white transition-colors",
+                        errors.fullName && "border-red-500 focus:ring-red-500"
+                      )}
                       placeholder="הכנס את שמך המלא"
                     />
+                    {errors.fullName && (
+                      <span className="text-sm text-red-500 mt-1 block">{errors.fullName.message}</span>
+                    )}
                   </motion.div>
 
                   <motion.div
@@ -109,11 +184,22 @@ const ContactSection: FC = () => {
                   >
                     <label className="block text-sm font-medium text-gray-700 mb-1">אימייל</label>
                     <Input
+                      {...register('email', {
+                        onChange: (e) => {
+                          // Trigger validation on change
+                          e.target.value;
+                        },
+                      })}
                       type="email"
-                      required
-                      className="w-full bg-white/70 focus:bg-white transition-colors"
+                      className={cn(
+                        "w-full bg-white/70 focus:bg-white transition-colors",
+                        errors.email && "border-red-500 focus:ring-red-500"
+                      )}
                       placeholder="הכנס את כתובת האימייל שלך"
                     />
+                    {errors.email && (
+                      <span className="text-sm text-red-500 mt-1 block">{errors.email.message}</span>
+                    )}
                   </motion.div>
 
                   <motion.div
@@ -123,10 +209,16 @@ const ContactSection: FC = () => {
                   >
                     <label className="block text-sm font-medium text-gray-700 mb-1">הודעה</label>
                     <Textarea
-                      required
-                      className="w-full min-h-[150px] bg-white/70 focus:bg-white transition-colors"
+                      {...register('message')}
+                      className={cn(
+                        "w-full min-h-[150px] bg-white/70 focus:bg-white transition-colors",
+                        errors.message && "border-red-500 focus:ring-red-500"
+                      )}
                       placeholder="כתוב את הודעתך כאן..."
                     />
+                    {errors.message && (
+                      <span className="text-sm text-red-500 mt-1 block">{errors.message.message}</span>
+                    )}
                   </motion.div>
                 </div>
 
@@ -137,11 +229,36 @@ const ContactSection: FC = () => {
                 >
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-all duration-300"
+                    disabled={isSubmitting}
+                    className={cn(
+                      "w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white",
+                      "hover:from-blue-700 hover:to-purple-700 transition-all duration-300",
+                      "disabled:opacity-50 disabled:cursor-not-allowed"
+                    )}
                   >
-                    <Send className="w-4 h-4 mr-2" />
-                    שלח הודעה
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        שולח...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4 mr-2" />
+                        שלח הודעה
+                      </>
+                    )}
                   </Button>
+
+                  {submitSuccess && (
+                    <motion.p
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="text-center text-green-600 font-medium mt-4"
+                    >
+                      ההודעה נשלחה בהצלחה! נחזור אליך בהקדם.
+                    </motion.p>
+                  )}
                 </motion.div>
               </form>
             </Card>
