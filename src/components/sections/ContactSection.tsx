@@ -55,7 +55,7 @@ const ContactSection: FC = () => {
     
     try {
       // Submit to Supabase
-      const { error } = await supabase
+      const { error: supabaseError } = await supabase
         .from('contact_submissions')
         .insert([
           {
@@ -66,8 +66,8 @@ const ContactSection: FC = () => {
           }
         ]);
 
-      if (error) {
-        throw new Error(error.message);
+      if (supabaseError) {
+        throw new Error(`Supabase error: ${supabaseError.message}`);
       }
 
       // Send email notification
@@ -83,8 +83,10 @@ const ContactSection: FC = () => {
         }),
       });
 
+      const emailResult = await emailResponse.json();
+
       if (!emailResponse.ok) {
-        console.error('Error sending email notification');
+        throw new Error(`Email error: ${emailResult.details || emailResult.error || 'Unknown error'}`);
       }
       
       // Show success UI

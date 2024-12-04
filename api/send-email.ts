@@ -30,12 +30,17 @@ export default async function handler(request: Request) {
   }
 
   try {
+    // Check if API key is set
+    if (!process.env.RESEND_API_KEY) {
+      throw new Error('RESEND_API_KEY is not set');
+    }
+
     const body = await request.json();
     const { name, email, message } = body;
 
     // Validate input
     if (!name || !email || !message) {
-      return new Response('Missing required fields', { 
+      return new Response(JSON.stringify({ error: 'Missing required fields' }), { 
         status: 400,
         headers: {
           'Access-Control-Allow-Origin': '*',
@@ -44,9 +49,9 @@ export default async function handler(request: Request) {
       });
     }
 
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: 'Contact Form <onboarding@resend.dev>',
-      to: 'ronener@gmail.com', // Updated with your actual email
+      to: 'ronener@gmail.com',
       subject: `New Contact Form Submission from ${name}`,
       html: `
         <h2>New Contact Form Submission</h2>
@@ -57,7 +62,11 @@ export default async function handler(request: Request) {
       `,
     });
 
-    return new Response(JSON.stringify({ success: true }), {
+    if ('error' in result && result.error) {
+      throw new Error(result.error.message);
+    }
+
+    return new Response(JSON.stringify({ success: true, data: result }), {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
@@ -66,7 +75,16 @@ export default async function handler(request: Request) {
     });
   } catch (error) {
     console.error('Error sending email:', error);
-    return new Response(JSON.stringify({ error: 'Error sending email' }), {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    
+    return new Response(JSON.stringify({ 
+      error: 'Error sending email',
+      details: errorMessage,
+      env: {
+        hasKey: !!process.env.RESEND_API_KEY,
+        nodeEnv: process.env.NODE_ENV
+      }
+    }), {
       status: 500,
       headers: {
         'Content-Type': 'application/json',
