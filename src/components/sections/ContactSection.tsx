@@ -54,6 +54,7 @@ const ContactSection: FC = () => {
     setSubmitError(null);
     
     try {
+      // Submit to Supabase
       const { error } = await supabase
         .from('contact_submissions')
         .insert([
@@ -67,6 +68,23 @@ const ContactSection: FC = () => {
 
       if (error) {
         throw new Error(error.message);
+      }
+
+      // Send email notification
+      const emailResponse = await fetch(import.meta.env.DEV ? 'http://localhost:3000/api/send-email' : '/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: data.fullName,
+          email: data.email,
+          message: data.message,
+        }),
+      });
+
+      if (!emailResponse.ok) {
+        console.error('Error sending email notification');
       }
       
       // Show success UI
