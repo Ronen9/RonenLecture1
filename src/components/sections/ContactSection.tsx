@@ -109,7 +109,7 @@ const ContactSection: FC = () => {
   };
 
   return (
-    <section className="py-20 px-6">
+    <section className="py-8 sm:py-12 px-6">
       {showConfetti && (
         <ReactConfetti
           width={windowSize.width}
@@ -162,7 +162,7 @@ const ContactSection: FC = () => {
                       whileHover={{ scale: 1.02 }}
                     >
                       <Phone className="w-5 h-5 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
-                      <span className="text-gray-700">+972-50-123-4567</span>
+                      <span className="text-gray-700">052-2826436</span>
                     </motion.div>
                   </div>
                 </div>

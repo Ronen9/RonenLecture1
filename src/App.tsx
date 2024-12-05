@@ -2,6 +2,7 @@ import { FC } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import AboutSection from '@/components/sections/AboutSection';
+import ValuePropositionSection from '@/components/sections/ValuePropositionSection';
 import TopicsSection from '@/components/sections/TopicsSection';
 import VideosSection from '@/components/sections/VideosSection';
 import GallerySection from '@/components/sections/GallerySection';
@@ -28,6 +29,7 @@ const App: FC = () => {
         <Header />
         <AboutSection />
         <TopicsSection />
+        <ValuePropositionSection />
         <VideosSection />
         <GallerySection />
         <ContactSection />
