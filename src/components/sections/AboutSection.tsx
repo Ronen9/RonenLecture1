@@ -74,7 +74,7 @@ const AboutSection: FC = () => {
                     whileHover={{ scale: 1.02 }}
                   >
                     <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
-                    <span className="text-sm sm:text-base text-gray-700">ronener@gmail.com</span>
+                    <span className="text-sm sm:text-base text-gray-700">kazablan.ai@gmail.com</span>
                   </motion.div>
                   <motion.div 
                     className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-white/80 rounded-lg hover:bg-blue-50/80 transition-all duration-300 group"
