@@ -50,8 +50,8 @@ export default async function handler(request: Request) {
     }
 
     const result = await resend.emails.send({
-      from: 'Contact Form <onboarding@resend.dev>',
-      to: 'kazablan.ai@gmail.com',
+      from: 'onboarding@resend.dev',
+      to: 'ronener@gmail.com',
       subject: `New Contact Form Submission from ${name}`,
       html: `
         <h2>New Contact Form Submission</h2>
